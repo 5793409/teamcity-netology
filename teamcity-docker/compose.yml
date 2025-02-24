@@ -1,0 +1,51 @@
+x-restat: &restart
+  restart: always
+
+services:
+  teamcity-server:
+    image: jetbrains/teamcity-server
+    container_name: teamcity-server-instance
+    <<: [*restart]
+    networks:
+      backend:
+        ipv4_address: 10.3.1.2
+    volumes:
+      - ./volumes/data:/data/teamcity_server/datadir
+      - ./volumes/logs:/opt/teamcity/logs
+    ports:
+      - "8111:8111"
+
+
+  teamcity-agent:
+    image: jetbrains/teamcity-agent
+    container_name: teamcity-agent-instance
+    <<: [*restart]
+    networks:
+      backend:
+        ipv4_address: 10.3.1.3
+    volumes:
+      - ./volumes/agent/:/data/teamcity_agent/conf 
+    environment:
+      SERVER_URL: http://10.3.1.2:8111
+
+
+  nexus:
+    image: sonatype/nexus3
+    container_name: nexus3
+    <<: [*restart]
+    networks:
+      backend:
+        ipv4_address: 10.3.1.4
+    environment:
+        INSTALL4J_ADD_VM_PARAMS: "-Xms1200m -Xmx1200m -XX:MaxDirectMemorySize=2G"
+    volumes:
+      - ./volumes/nexus-data:/nexus-data
+    ports:
+      - "8081:8081"
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.3.1.0/24
