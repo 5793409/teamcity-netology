@@ -7,6 +7,7 @@
   <param name="branch" value="master" />
   <param name="ignoreKnownHosts" value="true" />
   <param name="submoduleCheckout" value="CHECKOUT" />
+  <param name="teamcity:branchSpec" value="+:*" />
   <param name="teamcitySshKey" value="teamcity-netology-test-key_ed25519" />
   <param name="url" value="git@github.com:5793409/teamcity-netology.git" />
   <param name="useAlternates" value="AUTO" />
